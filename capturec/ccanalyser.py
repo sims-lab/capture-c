@@ -147,18 +147,18 @@ class SliceFilter():
         self.slices = self.slices[self.slices['parent_read'].isin(frags_capture['parent_read'])]
         return self
 
+    @staticmethod
+    def modify_re_frag(frag, adjust=1):
+        enzyme, chrom, index = frag.split('_')
+        return '_'.join([enzyme, chrom, str(int(index) + adjust)])
+
+
     def remove_multicapture_reporters(self, n_adjacent=1):
         '''Deals with an odd situation in which a reporter spanning two capture sites is not removed.
            This is due to the slice not being considered a capture or exclusion. To get around this
            the reporters on restriction fragments adjacent to capture sites are explicitly removed.
 
-           The number of restriction sites to exclude '''
-
-        def modify_re_frag(frag, adjust=1):
-            enzyme, chrom, index = frag.split('_')
-            return '_'.join([enzyme, chrom, str(int(index) + adjust)])
-
-
+           The number of restriction sites to exclude can be modified with n_adjacent '''
 
         captures = self.captures
         re_frags = captures['restriction_fragment'].unique()

@@ -294,10 +294,10 @@ def mapping_multiqc(infiles, outfile):
 def bam_to_bed(infile, outfile):
     '''Converts bam files to bed for faster intersection'''
     tmp = outfile.replace('.gz', '')
-    statement =  '''bedtools bamtobed
-                    -i %(infile)s | gzip > %(outfile)s'''
+    statement =  '''bedtools bamtobed -i %(infile)s
+                    | awk '{OFS="\\t"; print $1, $2, $3, $4"|"NR}'
+                    | gzip > %(outfile)s'''
     P.run(statement, job_queue=P.PARAMS['run_options_queue'])
-
 
 @transform(P.PARAMS["ccanalyser_capture"],
            regex(P.PARAMS["ccanalyser_capture"]),
